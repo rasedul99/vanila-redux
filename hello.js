@@ -1,4 +1,5 @@
-const { createStore } = require("redux");
+const { createStore, applyMiddleware } = require("redux");
+const { fetchTodosMiddleware } = require("./middleware");
 
 const initialState = {
   todos: [],
@@ -19,7 +20,7 @@ const todoReducer = (state = initialState, action) => {
     case "todos/todoLoaded":
       return {
         ...state,
-        todos: [...state.todos, action.payload],
+        todos: [...state.todos, ...action.payload],
       };
 
     default:
@@ -29,10 +30,10 @@ const todoReducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(todoReducer);
+const store = createStore(todoReducer, applyMiddleware(fetchTodosMiddleware));
 
 store.subscribe(() => {
   console.log(store.getState());
 });
 
-store.dispatch({ type: "todos/todoAdded", payload: "Learn Redux " });
+store.dispatch({ type: "todos/fetchTodos" });
